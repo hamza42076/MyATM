@@ -1,39 +1,63 @@
-
 let initalAmount = 20000;
 
-let addAmountBtn =  document.querySelector("#addAmount")
-let Withdrawbtn =  document.querySelector("#Withdraw")
-let showbalance = document.querySelector("#showBalance")
-
-let depositAmount = ()=>{
-  let inputValue = Number(document.querySelector("#Inputvalue").value); // ✅ convert to number
-    initalAmount +=inputValue;
-     document.querySelector("#Inputvalue").value = "";
-    console.log(initalAmount);
-}
-addAmountBtn.addEventListener("click",depositAmount)
-
-let showBalance = document.querySelector("#showBalance");
+let addAmountBtn = document.querySelector("#addAmount");
+let Withdrawbtn = document.querySelector("#Withdraw");
+let showbalance = document.querySelector("#showBalance");
 let showAmount = document.querySelector("#showAmount");
-let showAmountBalance =()=>{
-    showBalance.innerText = initalAmount;
-}
-    
-showAmount.addEventListener("click",showAmountBalance)
+let showHistoryBtn = document.querySelector("#showHistoryBtn");
+let historyDiv = document.querySelector("#history");
 
-let WithdrawAmount = ()=>{
-  let inputValue = Number(document.querySelector("#Inputvalue").value); // ✅ convert to number
-  if(inputValue > initalAmount){
-    alert("tumhare acount m itny paise nh h kindly check your balnce and withdraw about ur account")
+// ✅ Create a history array
+let transactionHistory = [];
 
-  }
-    initalAmount -=inputValue;
+// ✅ Deposit function
+let depositAmount = () => {
+  let inputValue = Number(document.querySelector("#Inputvalue").value);
+  if (inputValue > 0) {
+    initalAmount += inputValue;
+
+    transactionHistory.push(`Deposited Rs.${inputValue} | New Balance: Rs.${initalAmount}`);
     document.querySelector("#Inputvalue").value = "";
     console.log(initalAmount);
-}
-
-
-let checkBalance = () => {
-  showbalance.innerText = initalAmount;
+  } else {
+    alert("Please enter a valid amount to deposit.");
+  }
 };
-Withdrawbtn.addEventListener("click",WithdrawAmount)
+addAmountBtn.addEventListener("click", depositAmount);
+
+// ✅ Show balance function
+let showAmountBalance = () => {
+  showbalance.innerText = `Rs. ${initalAmount}`;
+};
+showAmount.addEventListener("click", showAmountBalance);
+
+// ✅ Withdraw function
+let WithdrawAmount = () => {
+  let inputValue = Number(document.querySelector("#Inputvalue").value);
+  if (inputValue > 0 && inputValue <= initalAmount) {
+    initalAmount -= inputValue;
+
+    transactionHistory.push(`Withdrew Rs.${inputValue} | New Balance: Rs.${initalAmount}`);
+    document.querySelector("#Inputvalue").value = "";
+    console.log(initalAmount);
+  } else {
+    alert("Insufficient balance or invalid input.");
+  }
+};
+Withdrawbtn.addEventListener("click", WithdrawAmount);
+
+// ✅ Show transaction history
+let showTransactionHistory = () => {
+  if (transactionHistory.length === 0) {
+    historyDiv.innerHTML = "<p>No transactions yet.</p>";
+    return;
+  }
+
+  let html = "<ul>";
+  transactionHistory.forEach((item) => {
+    html += `<li>${item}</li>`;
+  });
+  html += "</ul>";
+  historyDiv.innerHTML = html;
+};
+showHistoryBtn.addEventListener("click", showTransactionHistory);
